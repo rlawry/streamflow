@@ -5,7 +5,7 @@
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 
     <link rel="stylesheet" href="streamflow.css">
-    <title>My first three.js app</title>
+    <title>Streamflow Game</title>
 </head>
 
 

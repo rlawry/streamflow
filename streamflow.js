@@ -126,9 +126,9 @@ function testDirection(dir, e){
             document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashcorrect");});
             points++;
             document.getElementById("status").innerHTML = "Correct!";
-            if(beginColor+4<255){
-                beginColor += 4;
-                otherColor += 2;
+            if(beginColor+6=<255){
+                beginColor += 6;
+                otherColor += 3;
             }
             renderer.setClearColor("rgb("+otherColor+","+beginColor+","+otherColor+")");
         }
@@ -136,7 +136,10 @@ function testDirection(dir, e){
             console.log("WRONG");
             if(points>0){points--;}
             document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashwrong");});
-            document.getElementById("status").innerHTML = "Correct!";
+            document.getElementById("status").innerHTML = "WRONG (maybe)!  Lose Points!";
+            if(beginColor-6>=0){
+                beginColor -= 6;
+            }
         }
         answered = true;
         spun = false;

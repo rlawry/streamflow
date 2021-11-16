@@ -4,6 +4,8 @@ var answered = false;
 var points = 0;
 var direction;
 var spun = false;
+var beginColor = 0;
+var otherColor = 0;
 
 document.addEventListener("DOMContentLoaded", function(){
     
@@ -19,20 +21,38 @@ document.addEventListener("DOMContentLoaded", function(){
                 spinSpeed = Math.random()*1.5;
                 spinDirection = generateSpinDirection();
                 spinSpeed = spinSpeed * spinDirection;
+                document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashcorrect");});
+                document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashwrong");});
             }
             else if (spun ==true && answered == false){
                 document.getElementById("status").innerHTML = "You need to guess";
             }
         }
-        console.log("Space event triggered");
     };
+    document.getElementById("spin-button").addEventListener("click", function() {
+        if(spun==false){
+            answered = false;
+            spun = true;
+            document.getElementById("status").innerHTML = "";
+            dateEnd = new Date();
+            dateEnd.setSeconds(dateNow.getSeconds() + 2); 
+
+            spinSpeed = Math.random()*1.5;
+            spinDirection = generateSpinDirection();
+            spinSpeed = spinSpeed * spinDirection;
+            document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashcorrect");});
+            document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashwrong");});
+        }
+        else if (spun ==true && answered == false){
+            document.getElementById("status").innerHTML = "You need to guess";
+        }
+    });
     var buttons = document.querySelectorAll(".btn").length;
     for (var i = 0; i < buttons ; i++) {
         document.querySelectorAll(".btn")[i].addEventListener("click", function(e) {
                 direction = determineAngle(group.rotation.z);
                 if(spun == true && answered == false){
                     testDirection(direction, this.value);
-                    console.log("We tested the angle with " + direction + " and " + this.value + " as the value");
                 }
                 else if(spun == false){
                     document.getElementById("status").innerHTML = "You need to spin";
@@ -40,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 else if(answered == true){
                     document.getElementById("status").innerHTML = "You need to guess";
                 }
-                console.log("Bitton event triggered");
             }
         );
+
     }
 });
 
@@ -56,7 +76,6 @@ function generateSpinDirection(){
 function determineAngle(e){
     var result;
     var cycles = Math.floor(e / (2*Math.PI));
-    console.log(cycles);
     if(Math.abs(cycles)>=1){
         result = e - cycles*2*Math.PI;
         return result;
@@ -66,64 +85,62 @@ function determineAngle(e){
     }
 }
 
+var correct = false;
+
 function testDirection(dir, e){
     var n;
     var fluff = 20;
 
     if(dir<0){n += 2*Math.PI;}
     var n = (dir * 180/Math.PI);
-    console.log(n + " the angle that is correct");
+    console.log(n + " the angle that is correct and e:" + e);
     if(answered == false && spun == true){
-        if (337.5 - fluff < n || n <= 22.5 + fluff && e == 2) {
-            console.log("Correct East");
-            points++;
-
+        if ((337.5 - fluff < n || n <= 22.5 + fluff) && e == 2) {
+            correct = true;
         }
         else if (22.5 - fluff < n && n <= 67.5 + fluff && e == 1) {
-            console.log("Correct North East");
-            points++;
-
+            correct = true;
         }
         else if (67.5 - fluff < n && n <= 112.5 + fluff && e == 0) {
-            console.log("Correct North");
-            points++;
-    
+            correct = true;
         }
         else if (112.5 - fluff < n && n <= 157.5 + fluff && e == 7) {
-            console.log("Correct North West");
-            points++;
-
+            correct = true;
         }
         else if (157.5 - fluff < n && n <= 202.5 + fluff && e == 6) {
-            console.log("Correct West");
-            points++;
-
+            correct = true;
         }
         else if (202.5 - fluff < n && n <= 247.5 + fluff && e == 5) {
-            console.log("Correct South West");
-            points++;
-
+            correct = true;
         }
         else if (247.5 - fluff < n && n <= 292.5 + fluff && e == 4) {
-            console.log("Correct South");
-            points++;
-
+            correct = true;
         }
         else if (292.5 - fluff < n && n <= 337.5 + fluff && e == 3) {
-            console.log("Correct South East");
-            points++;
-
+            correct = true;
         }
         else{
+            correct = false;
+        }
+        if(correct){
+            document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashcorrect");});
+            points++;
+            document.getElementById("status").innerHTML = "Correct!";
+            if(beginColor+4<255){
+                beginColor += 4;
+                otherColor += 2;
+            }
+            renderer.setClearColor("rgb("+otherColor+","+beginColor+","+otherColor+")");
+        }
+        else if(!correct){
             console.log("WRONG");
             if(points>0){points--;}
-
+            document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashwrong");});
+            document.getElementById("status").innerHTML = "Correct!";
         }
         answered = true;
         spun = false;
     }
-    else if(spun == false){document.getElementById("status").innerHTML = "got em you never spun";}
-    else if(answered == true){document.getElementById("status").innerHTML = "got em you already answered";}
     document.getElementById("points").innerHTML = "Points: " + points;
 }
 

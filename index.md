@@ -5,7 +5,7 @@
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 
     <link rel="stylesheet" href="streamflow.css">
-    <title>Streamflow Game</title>
+    <title>Stream Flow Game</title>
 </head>
 
 
@@ -15,12 +15,13 @@
     <div class="instructions">
         <div class="row">The Top of the Screen is Always North.</div>
         <div class="row">Press Space to spin the stream valley.</div>
+        <div class="row spin-button" id="spin-button">Spin</div>
     </div>
-    <div class="points" id="points"></div>
+    <div class="points" id="points">Points: 0</div>
     <div class="status" id="status"></div>
     <div class="control-panel">
         <div class="direction-buttons">
-            <div class="pie">
+            <div class="pie" id="pie">
                 <button style="transform: rotate(-22.5deg) skewY(-45deg);" value="0" class="btn">
                     <span style="transform: skewY(-45deg) rotate(45deg)" class="text"></span>
                 </button>

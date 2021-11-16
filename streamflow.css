@@ -11,6 +11,8 @@ canvas {
 
 body {
     margin: 0px;
+    user-select: none;
+    caret-color: transparent;
 }
 
 .control-panel {
@@ -31,6 +33,7 @@ body {
 .row {
     position: relative;
     display: block;
+    overflow: visible;
 }
 
 .instructions{
@@ -47,8 +50,10 @@ body {
     top: 10%;
     right: 10%;
     color: white;
-    font-size: 90%;
+    font-size: 28px;
     font-family: courier-prime;
+    user-select: none;
+    caret-color: transparent;
 }
 
 .status{
@@ -65,7 +70,7 @@ body {
     position: absolute;
     width: 190px;
     height: 190px;
-    border-radius: 50%;
+    border-radius: 45%;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
@@ -80,7 +85,7 @@ body {
 
 button, button:focus {
     outline: none;
-    background-color: #90ee90;
+    background-color: #9898a3;
     border: thin solid white;
     position: absolute;
     cursor: pointer;
@@ -95,6 +100,71 @@ button, button:focus {
 button:hover {
     box-shadow: 0px 0px 10px 5px #515151;
     z-index: 2;
+}
+
+@keyframes flashcorrect {
+    0% {
+        background-color: rgb(30, 255, 30);
+        opacity:1;
+    }
+    52% {
+        background-color: rgb(111, 255, 128);
+    }
+}
+   
+.flashcorrect {
+    animation-name: flashcorrect;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}  
+
+@keyframes flashwrong {
+    0% {
+        background-color: #dc143c;
+        opacity:1;
+    }
+    22% {
+        background-color: #ff0000;
+    }
+    77% {
+        background-color: #AACCCC;
+    }
+    100% {
+        background-color: #AAAAFF;
+    }
+}
+
+.flashwrong {
+    animation-name: flashwrong;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}  
+
+
+
+.spin-button{
+    background-color: rgb(255, 255, 0);
+    border-radius: 25px;
+    color: black;
+    padding: 15px;
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
+    overflow: visible;
+    text-align: center;
+    box-shadow: 0px 0px 5px 8px #333;
+    transition: 600ms;
+    caret-color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+.spin-button:hover{
+    background-color: rgb(255,255,80);
+    box-shadow: 0px 0px 5px 10px #aaaa00;
 }
 
 .direction-buttons {
@@ -125,7 +195,7 @@ button:hover {
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
-    color: black;
+    color: white;
     top: 4%;
     bottom: 0;
     left: 0;
@@ -136,6 +206,7 @@ button:hover {
     z-index: 5;
     caret-color: transparent;
     pointer-events: none;
+    text-shadow: 2px 2px 4px #000000;
 }
 
 #warped>span[class^=w]:nth-of-type(n+0) {

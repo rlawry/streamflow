@@ -126,11 +126,12 @@ function testDirection(dir, e){
             document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashcorrect");});
             points++;
             document.getElementById("status").innerHTML = "Correct!";
-            if(beginColor+6=<255){
+            if(beginColor+6<=255){
                 beginColor += 6;
                 otherColor += 3;
             }
             renderer.setClearColor("rgb("+otherColor+","+beginColor+","+otherColor+")");
+            document.body.style.backgroundColor = "rgb("+otherColor+","+beginColor+","+otherColor+")";
         }
         else if(!correct){
             console.log("WRONG");
@@ -156,7 +157,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 130, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setSize( window.innerWidth*.5, window.innerHeight*.5 );
 
 document.body.appendChild( renderer.domElement );
 var plane;
@@ -178,7 +179,19 @@ loader.load(
 // plane
 scene.add(group);
 
-camera.position.z = 5;
+camera.position.z = 3;
+document.getElementById("container").appendChild(renderer.domElement);
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth*.5, window.innerHeight*.5 );
+
+}
 
 const animate = function () {
     requestAnimationFrame( animate );
@@ -190,3 +203,5 @@ const animate = function () {
 };
 
 animate();
+
+

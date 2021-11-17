@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var buttons = document.querySelectorAll(".btn").length;
     for (var i = 0; i < buttons ; i++) {
         document.querySelectorAll(".btn")[i].addEventListener("click", function(e) {
-                direction = determineAngle(group.rotation.z);
+                direction = determineAngle(plane.rotation.z);
                 if(spun == true && answered == false){
                     testDirection(direction, this.value);
                 }
@@ -88,12 +88,13 @@ function determineAngle(e){
 var correct = false;
 
 function testDirection(dir, e){
-    var n;
+    var n=0;
     var fluff = 20;
-
+    if(points>=10){dir-=7*Math.PI/6;}
     if(dir<0){n += 2*Math.PI;}
-    var n = (dir * 180/Math.PI);
-    console.log(n + " the angle that is correct and e:" + e);
+    n = (dir * 180/Math.PI);
+
+    console.log(dir + " dir - " + n + " n - e:" + e);
     if(answered == false && spun == true){
         if ((337.5 - fluff < n || n <= 22.5 + fluff) && e == 2) {
             correct = true;
@@ -132,6 +133,17 @@ function testDirection(dir, e){
             }
             renderer.setClearColor("rgb("+otherColor+","+beginColor+","+otherColor+")");
             document.body.style.backgroundColor = "rgb("+otherColor+","+beginColor+","+otherColor+")";
+            if(points==10){
+                const loader2 = new THREE.TextureLoader();
+                loader2.load(
+                    'stream2.png',
+                    function(texture){
+                        plane.material = new THREE.MeshBasicMaterial({
+                            map: texture
+                        });
+                    });
+                    document.getElementById("status").innerHTML = "Correct! Next Level";
+            }
         }
         else if(!correct){
             console.log("WRONG");
@@ -162,7 +174,6 @@ renderer.setSize( window.innerWidth*.5, window.innerHeight*.5 );
 document.body.appendChild( renderer.domElement );
 var plane;
 const loader = new THREE.TextureLoader();
-var group = new THREE.Group();
 loader.load(
     'streamIMG.png',
     function(texture){
@@ -172,12 +183,8 @@ loader.load(
         plane = new THREE.Mesh(new THREE.PlaneGeometry(8, 8),material);
         plane.overdraw = true;
 
-        group.add(plane);
+        scene.add(plane);
     });
-
-
-// plane
-scene.add(group);
 
 camera.position.z = 3;
 document.getElementById("container").appendChild(renderer.domElement);
@@ -197,7 +204,7 @@ const animate = function () {
     requestAnimationFrame( animate );
     dateNow = new Date();
     if(dateNow < dateEnd){
-        group.rotation.z += spinSpeed;
+        plane.rotation.z += spinSpeed;
     }
     renderer.render( scene, camera );
 };

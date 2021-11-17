@@ -12,10 +12,12 @@
 
 <body onkeyup="event.preventDefault()">
     <script type="module" src="streamflow.js"></script>
+    <div id="container"></div>
     <div class="instructions">
         <div class="row">The Top of the Screen is Always North.</div>
         <div class="row">Press Space to spin the stream valley.</div>
         <div class="row spin-button" id="spin-button">Spin</div>
+        <div class="row">Which way does the stream flow?</div>
     </div>
     <div class="points" id="points">Points: 0</div>
     <div class="status" id="status"></div>

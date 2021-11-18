@@ -2,10 +2,10 @@ var dateNow = new Date();
 var dateEnd = new Date();
 var answered = false;
 var points = 0;
-var direction;
 var spun = false;
 var beginColor = 0;
 var otherColor = 0;
+var spinSpeed, spinDirection, direction;
 
 document.addEventListener("DOMContentLoaded", function(){
     
@@ -16,13 +16,13 @@ document.addEventListener("DOMContentLoaded", function(){
                 spun = true;
                 document.getElementById("status").innerHTML = "";
                 dateEnd = new Date();
-                dateEnd.setSeconds(dateNow.getSeconds() + 2); 
+                dateEnd.setSeconds(dateNow.getSeconds() + 1); 
 
                 spinSpeed = Math.random()*1.5;
                 spinDirection = generateSpinDirection();
                 spinSpeed = spinSpeed * spinDirection;
-                document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashcorrect");});
-                document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashwrong");});
+                document.querySelectorAll(".pie").forEach(item => {item.classList.remove("flashcorrect");});
+                document.querySelectorAll(".pie").forEach(item => {item.classList.remove("flashwrong");});
             }
             else if (spun ==true && answered == false){
                 document.getElementById("status").innerHTML = "You need to guess";
@@ -35,13 +35,13 @@ document.addEventListener("DOMContentLoaded", function(){
             spun = true;
             document.getElementById("status").innerHTML = "";
             dateEnd = new Date();
-            dateEnd.setSeconds(dateNow.getSeconds() + 2); 
+            dateEnd.setSeconds(dateNow.getSeconds() + 1); 
 
             spinSpeed = Math.random()*1.5;
             spinDirection = generateSpinDirection();
             spinSpeed = spinSpeed * spinDirection;
-            document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashcorrect");});
-            document.querySelectorAll(".btn").forEach(item => {item.classList.remove("flashwrong");});
+            document.querySelectorAll(".pie").forEach(item => {item.classList.remove("flashcorrect");});
+            document.querySelectorAll(".pie").forEach(item => {item.classList.remove("flashwrong");});
         }
         else if (spun ==true && answered == false){
             document.getElementById("status").innerHTML = "You need to guess";
@@ -50,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function(){
     var buttons = document.querySelectorAll(".btn").length;
     for (var i = 0; i < buttons ; i++) {
         document.querySelectorAll(".btn")[i].addEventListener("click", function(e) {
-                direction = determineAngle(plane.rotation.z);
+                console.log(plane.rotation.z + " current rotation");
                 if(spun == true && answered == false){
-                    testDirection(direction, this.value);
+                    testDirection(this.value);
                 }
                 else if(spun == false){
                     document.getElementById("status").innerHTML = "You need to spin";
@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 });
-
 
 
 function generateSpinDirection(){
@@ -86,17 +85,29 @@ function determineAngle(e){
 }
 
 var correct = false;
+var levelPoints = 10;
+var dir;
+var level1Correction = Math.PI/18
+var level2Correction = 19 * Math.PI/18;
 
-function testDirection(dir, e){
+function testDirection(e){
+    if(points < levelPoints){
+        dir = determineAngle(plane.rotation.z-level1Correction);
+    }
+    else{
+        dir = determineAngle(plane.rotation.z-level2Correction-level1Correction);
+        console.log(dir + " direction");
+    }
     var n=0;
-    var fluff = 20;
-    if(points>=10){dir-=7*Math.PI/6;}
-    if(dir<0){n += 2*Math.PI;}
-    n = (dir * 180/Math.PI);
+    var fluff = 40;
 
-    console.log(dir + " dir - " + n + " n - e:" + e);
+    n = (dir * 180/Math.PI);
+    if(dir<0){n += 2*Math.PI;}
+    
+    console.log("Button " + e + " pressed. N value = " + n + ".  +Fluff = " + (n + fluff) + " and - Fluff = " + (n - fluff) +".");
     if(answered == false && spun == true){
         if ((337.5 - fluff < n || n <= 22.5 + fluff) && e == 2) {
+
             correct = true;
         }
         else if (22.5 - fluff < n && n <= 67.5 + fluff && e == 1) {
@@ -124,7 +135,7 @@ function testDirection(dir, e){
             correct = false;
         }
         if(correct){
-            document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashcorrect");});
+            document.querySelectorAll(".pie").forEach(item => {item.classList.add("flashcorrect");});
             points++;
             document.getElementById("status").innerHTML = "Correct!";
             if(beginColor+6<=255){
@@ -133,7 +144,7 @@ function testDirection(dir, e){
             }
             renderer.setClearColor("rgb("+otherColor+","+beginColor+","+otherColor+")");
             document.body.style.backgroundColor = "rgb("+otherColor+","+beginColor+","+otherColor+")";
-            if(points==10){
+            if(points==levelPoints){
                 const loader2 = new THREE.TextureLoader();
                 loader2.load(
                     'stream2.png',
@@ -148,7 +159,7 @@ function testDirection(dir, e){
         else if(!correct){
             console.log("WRONG");
             if(points>0){points--;}
-            document.querySelectorAll(".btn").forEach(item => {item.classList.add("flashwrong");});
+            document.querySelectorAll(".pie").forEach(item => {item.classList.add("flashwrong");});
             document.getElementById("status").innerHTML = "WRONG (maybe)!  Lose Points!";
             if(beginColor-6>=0){
                 beginColor -= 6;
@@ -161,9 +172,6 @@ function testDirection(dir, e){
 }
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.124/build/three.module.js'; 
-
-var spin = false;
-var spinSpeed, spinDirection, direction;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 130, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -184,6 +192,7 @@ loader.load(
         plane.overdraw = true;
 
         scene.add(plane);
+        console.log(plane.rotation.z + " initial rotation");
     });
 
 camera.position.z = 3;
